@@ -1,0 +1,27 @@
+{
+  "store": {
+    "name": "コスモ石油"
+  },
+  "transaction": {
+    "date": "2024-01-10",
+    "time": "22:32"
+  },
+  "items": [
+    {
+      "item_name": "レギュラーガソリン",
+      "unit_price": 166,
+      "quantity": 18.08,
+      "unit": "L",
+      "category": "交通",
+      "total_price": 3000
+    }
+  ],
+  "total": {
+    "amount": 3000,
+    "points_earned": 0,
+    "points_used": 0
+  },
+  "payment": {
+    "payment_method": "現金"
+  }
+}
