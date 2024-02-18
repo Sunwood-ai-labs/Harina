@@ -1,0 +1,27 @@
+{
+  "store": {
+    "name": ""
+  },
+  "transaction": {
+    "date": "",
+    "time": ""
+  },
+  "items": [
+    {
+      "item_name": "",
+      "unit_price": ,
+      "quantity": ,
+      "unit": "",
+      "category": "".
+      "total_price": 
+    }
+  ],
+  "total": {
+    "amount": ,
+    "points_earned": ,
+    "points_used": 
+  },
+  "payment": {
+    "payment_method": ""
+  }
+}
