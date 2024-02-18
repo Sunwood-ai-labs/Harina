@@ -1,12 +1,16 @@
 import discord
-import os
+from discord.ext import commands
 from loguru import logger
 import urllib.request
 import datetime
+import os
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
+
+# ロギング設定の例
+logger.add("debug.log", format="{time} {level} {message}", level="DEBUG")
 
 import sys
 import pprint
@@ -15,38 +19,46 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 pprint.pprint(sys.path)
 
+# 相対インポートまたは適切なパス設定を検討してください
 from api.ConfigLoader import ConfigLoader
 from api.CategoryLoader import CategoryLoader
 from api.ReceiptAnalyzer import ReceiptAnalyzer
 
+# コンフィグとカテゴリローダーの初期化
 config_loader = ConfigLoader()
 category_loader = CategoryLoader("data/category.csv")
 analyzer = ReceiptAnalyzer(config_loader, category_loader)
 
-
 TOKEN = os.getenv('DISCORD_BOT_TOKEN_HARINA')
 
-client = discord.Client(intents=intents)
+# help_commandをNoneに設定してビルトインのヘルプコマンドを無効化
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
-@client.event
+
+@bot.event
 async def on_ready():
     logger.info("ログインしました")
 
-@client.event
+@bot.event
 async def on_message(message):
     if message.author.bot:
         return
     if message.content == '/harina':
         await message.channel.send('ちゅん')
-        logger.info("channel id : ".format(message.channel.id))
+        logger.info("channel id : {}".format(message.channel.id))
     
-        
+    if(message.channel.id == 1208743619029368836):
+        target_dir = "maki"
+    else:
+        target_dir = "sample"
+
     if message.attachments:
+        logger.info("channel id : {}".format(message.channel.id))
         for attachment in message.attachments:
             url = attachment.url
             date = datetime.datetime.now()
             file_name = f"{date.strftime('%Y%m%d%H%M%S')}_{attachment.filename}.jpg".replace(".jpg.jpg",".jpg")
-            save_dir = 'data/img'
+            save_dir = f'data/img/{target_dir}'
             
             # 保存ディレクトリが存在するか確認し、なければ作成
             if not os.path.exists(save_dir):
@@ -62,9 +74,10 @@ async def on_message(message):
                 logger.error(f"画像の保存に失敗しました: {e}")
                 await message.channel.send("画像の保存に失敗しました。")
         
-        receipt = analyzer.analyze_receipts("data/img", "maki")
+        receipt = analyzer.analyze_receipts(save_dir, target_dir)
         await message.channel.send("```{}```".format(receipt))
     else:
         await message.channel.send("添付ファイルが見つかりません。")
 
-client.run(TOKEN)
+# client.run(TOKEN)
+bot.run(TOKEN)
