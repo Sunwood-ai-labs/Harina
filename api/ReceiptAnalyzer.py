@@ -31,14 +31,22 @@ class ReceiptAnalyzer:
         """
         return system_prompt
 
+
+
     def analyze_receipts(self, image_folder, save_dir):
         """
         指定されたフォルダ内のすべてのレシート画像を解析します。
         """
+        # 保存ディレクトリのパスを生成
+        save_path = os.path.join("output", save_dir)
+        # 保存ディレクトリが存在しない場合は作成
+        os.makedirs(save_path, exist_ok=True)
+        
         image_paths = glob.glob(f"{image_folder}/*.jpg")
         for image_path in image_paths:
             image_name = os.path.basename(image_path)
-            output_file_name = f"output/{save_dir}/receipt_{image_name.replace('.jpg', '.json')}"
+            output_file_name = os.path.join(save_path, f"receipt_{image_name.replace('.jpg', '.json')}")
+
             
             # 出力フォルダに同名のファイルが存在する場合はスキップ
             if os.path.exists(output_file_name):
