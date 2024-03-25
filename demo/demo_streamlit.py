@@ -4,12 +4,15 @@ import streamlit as st
 st.title("ストリームリットの簡単なサンプルアプリ")
 st.write("このサンプルでは、ストリームリットの使用方法を簡単に紹介します。")
 
-# テキスト入力の追加
-name = st.text_input("あなたの名前を入力してください:")
+# 数値入力の追加
+num1 = st.number_input("最初の数値を入力してください:")
+num2 = st.number_input("2番目の数値を入力してください:")
+num3 = st.number_input("3番目の数値を入力してください:")
 
 # ボタンの追加
-submit_button = st.button("送信")
+submit_button = st.button("計算")
 
-# 送信ボタンがクリックされたときの処理
+# 計算結果の表示
 if submit_button:
-    st.write(f"こんにちは、{name}さん！")
+    result = num1 * num2 * num3
+    st.write(f"計算結果: {result}")
