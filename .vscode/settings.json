@@ -1,6 +1,6 @@
 {
     "markdown-preview-github-styles.colorTheme": "light",
-    "gitlens.ai.experimental.generateCommitMessagePrompt": "simple commit msg",
+    "gitlens.experimental.generateCommitMessagePrompt": "simple commit msg",
     "gitlens.ai.experimental.generateCommitMessage.enabled": true,
     "gitlens.ai.experimental.openai.url": "",
     "gitlens.ai.experimental.anthropic.model": "claude-3-haiku-20240307",
