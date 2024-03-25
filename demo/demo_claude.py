@@ -1,5 +1,5 @@
 import anthropic
-
+import pprint
 client = anthropic.Anthropic()
 
 message = client.messages.create(
@@ -13,3 +13,7 @@ message = client.messages.create(
 )
 
 print(message.content)
+print("----------------")
+pprint.pprint(message)
+print("----------------")
+pprint.pprint(message.content[0].text)

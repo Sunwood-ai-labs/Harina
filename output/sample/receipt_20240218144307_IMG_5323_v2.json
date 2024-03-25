@@ -1,9 +1,9 @@
 {
   "store": {
-    "name": "スギ薬局"
+    "name": ""
   },
   "transaction": {
-    "date": "2024-02-06",
+    "date": "2024年02月06日",
     "time": "12:37"
   },
   "items": [
@@ -11,7 +11,7 @@
       "item_name": "オートミールパン",
       "unit_price": 398,
       "quantity": 1,
-      "unit": "個",
+      "unit": "",
       "category": "食費",
       "total_price": 398
     },
@@ -19,29 +19,29 @@
       "item_name": "糖質オフ大豆",
       "unit_price": 658,
       "quantity": 1,
-      "unit": "袋",
+      "unit": "",
       "category": "食費",
       "total_price": 658
     },
     {
-      "item_name": "国産むきカシュー",
+      "item_name": "国産茶けんぴ",
       "unit_price": 298,
       "quantity": 1,
-      "unit": "袋",
+      "unit": "",
       "category": "食費",
       "total_price": 298
     },
     {
-      "item_name": "手羽先キャベツ",
+      "item_name": "干切りキャベツ",
       "unit_price": 98,
       "quantity": 1,
-      "unit": "個",
+      "unit": "",
       "category": "食費",
       "total_price": 98
     }
   ],
   "total": {
-    "amount": 1452,
+    "amount": 1568,
     "points_earned": 28,
     "points_used": 0
   },
