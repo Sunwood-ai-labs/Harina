@@ -6,4 +6,4 @@ services:
       - .env
     volumes:
       - .:/app
-    command: /bin/bash -c "python bot/harina.py"
+    command: /bin/bash -c "python bot/Kakeibo_HARINA.py"
