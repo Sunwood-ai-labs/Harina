@@ -11,6 +11,8 @@
 
 抽出されたデータは、Google Apps Script（GAS）を介してGoogle スプレッドシートに自動的に送信され、さらなる分析や保存が可能です。
 
+![](docs/harina_demo.gif)
+
 ## 主な特徴
 
 - **Claude 3 Haiku モデルによる高速レシート解析**
