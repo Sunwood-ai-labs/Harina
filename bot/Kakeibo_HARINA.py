@@ -94,6 +94,13 @@ async def process_attachments(message):
                 os.makedirs(archive_path, exist_ok=True)
                 shutil.move(file_path, os.path.join(archive_path, file_name))
 
+    # imgフォルダ内の画像ファイルを削除
+    for root, dirs, files in os.walk(save_dir):
+        for file_name in files:
+            if file_name.endswith('.jpg'):
+                file_path = os.path.join(root, file_name)
+                os.remove(file_path)
+
 @bot.event
 async def on_ready():
     logger.info("ログインしました")
