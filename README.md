@@ -6,6 +6,8 @@
 
 </h1>
 
+[![](https://img.shields.io/static/v1?label=Blog&message=Harina-Claude3Haikuを使ったレシート解析DiscordBotアプリ&color=red)](https://hamaruki.com/harina-receipt-analysis-discord-bot-app-using-claude-3-haiku/)
+
 
 このDiscord botは、ユーザーが送信したレシート画像を解析し、高速かつ効率的なClaude 3 Haikuモデルを使用して関連情報を抽出します。
 
