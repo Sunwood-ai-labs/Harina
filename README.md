@@ -2,7 +2,7 @@
 <h1>
 <img src="https://raw.githubusercontent.com/Sunwood-ai-labs/Harina/main/docs/harina_icon.png" height=200px align="right"/>
 
-HARINA ~Claude3レシート管理アプリ~
+**HARINA** ～Claude3レシート管理アプリ～
 
 </h1>
 
