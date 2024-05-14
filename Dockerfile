@@ -12,7 +12,7 @@ RUN apt upgrade -y
 
 RUN pip install --upgrade pip
 RUN pip install  "discord.py[voice]"
-RUN pip install loguru pandas
+RUN pip install loguru pandas termcolor art litellm
 
 # RUN pip install -q -U google-generativeai
 RUN pip install anthropic
