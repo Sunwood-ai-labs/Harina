@@ -2,15 +2,16 @@ import os
 import json
 import pprint
 import glob
-from api.APIRequestSender import APIRequestSender
-from api.ImageEncoder import ImageEncoder
-import anthropic
+from litellm import completion
+from art import text2art
+from termcolor import colored
+from pathlib import Path
+import base64
 
-class ReceiptAnalyzer:
+class ReceiptAnalyzerLitellm:
     def __init__(self, config_loader, category_loader):
         self.config_loader = config_loader
         self.category_loader = category_loader
-        self.client = anthropic.Anthropic()
 
     def create_system_prompt(self, categories):
         """
@@ -32,6 +33,21 @@ class ReceiptAnalyzer:
         """
         return system_prompt
 
+    def encode_image(self, image_path):
+        """
+        画像をBase64エンコードします。
+        """
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+
+    def decorated_message(self, message):
+        """
+        デコレーションされたメッセージを生成します。
+        """
+        art_message = text2art("OpenAI Response")
+        colored_message = colored(art_message, 'cyan')
+        return colored_message + "\n" + colored(message, 'green')
+
     def analyze_receipts(self, image_folder, save_dir):
         """
         指定されたフォルダ内のすべてのレシート画像を解析します。
@@ -52,12 +68,14 @@ class ReceiptAnalyzer:
                 print(f"Skipping {image_name} as output JSON already exists.")
                 continue
 
-            base64_image = ImageEncoder.encode_image(image_path)
+            base64_image = self.encode_image(image_path)
+            file_extension = Path(image_path).suffix[1:]
+            url = f"data:image/{file_extension};base64,{base64_image}"
+
             system_prompt = self.create_system_prompt(self.category_loader.categories)
 
-            message = self.client.messages.create(
-                model="claude-3-haiku-20240307",
-                max_tokens=1024,
+            response = completion(
+                model="gpt-4o",
                 messages=[
                     {
                         "role": "user",
@@ -67,20 +85,19 @@ class ReceiptAnalyzer:
                                 "text": system_prompt
                             },
                             {
-                                "type": "image",
-                                "source": {
-                                    "type": "base64",
-                                    "media_type": "image/jpeg",
-                                    "data": base64_image
-                                }
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": url,
+                                },
                             }
-                        ],
+                        ]
                     }
                 ],
+                max_tokens=1024
             )
 
             # 応答データの処理
-            content = message.content[0].text
+            content = response['choices'][0]['message']['content']
             _receipt = content.replace("```json", "").replace("```", "")
             receipt = json.loads(_receipt)
             
