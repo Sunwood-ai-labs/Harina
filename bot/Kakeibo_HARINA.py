@@ -21,7 +21,8 @@ pprint.pprint(sys.path)
 
 from api.ConfigLoader import ConfigLoader
 from api.CategoryLoader import CategoryLoader
-from api.ReceiptAnalyzer import ReceiptAnalyzer
+# from api.ReceiptAnalyzer import ReceiptAnalyzer
+from api.ReceiptAnalyzerLitellm import ReceiptAnalyzerLitellm as ReceiptAnalyzer
 
 config_loader = ConfigLoader()
 category_loader = CategoryLoader("data/category.csv")
