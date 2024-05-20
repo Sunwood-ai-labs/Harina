@@ -48,9 +48,10 @@ class ReceiptAnalyzerLitellm:
         colored_message = colored(art_message, 'cyan')
         return colored_message + "\n" + colored(message, 'green')
 
-    def analyze_receipts(self, image_folder, save_dir):
+    async def analyze_receipts(self, image_folder, save_dir, message, retry_count=3):
         """
         指定されたフォルダ内のすべてのレシート画像を解析します。
+        エラーが発生した場合、指定された回数だけ再試行します。
         """
         # 保存ディレクトリのパスを生成
         save_path = os.path.join("output", save_dir)
@@ -60,49 +61,62 @@ class ReceiptAnalyzerLitellm:
         image_paths = glob.glob(f"{image_folder}/*.jpg")
         print(f"image_paths:{image_paths}")
         for image_path in image_paths:
-            image_name = os.path.basename(image_path)
-            output_file_name = os.path.join(save_path, f"receipt_{image_name.replace('.jpg', '.json')}")
-
-            # 出力フォルダに同名のファイルが存在する場合はスキップ
-            if os.path.exists(output_file_name):
-                print(f"Skipping {image_name} as output JSON already exists.")
-                continue
-
-            base64_image = self.encode_image(image_path)
-            file_extension = Path(image_path).suffix[1:]
-            url = f"data:image/{file_extension};base64,{base64_image}"
-
-            system_prompt = self.create_system_prompt(self.category_loader.categories)
-
-            response = completion(
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": system_prompt
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": url,
-                                },
-                            }
-                        ]
-                    }
-                ],
-                max_tokens=1024
-            )
-
-            # 応答データの処理
-            content = response['choices'][0]['message']['content']
-            _receipt = content.replace("```json", "").replace("```", "")
-            receipt = json.loads(_receipt)
             
-            with open(output_file_name, 'w', encoding='utf-8') as f:
-                json.dump(receipt, f, ensure_ascii=False, indent=2)
-            print(f"Output saved to {output_file_name}")
+            await message.channel.send(f"---\n`{os.path.basename(image_path)}` の解析を開始します...")
+            for retry in range(retry_count):
+                try:
+                    image_name = os.path.basename(image_path)
+                    output_file_name = os.path.join(save_path, f"receipt_{image_name.replace('.jpg', '.json')}")
 
+                    # 出力フォルダに同名のファイルが存在する場合はスキップ
+                    if os.path.exists(output_file_name):
+                        print(f"Skipping {image_name} as output JSON already exists.")
+                        break
+
+                    base64_image = self.encode_image(image_path)
+                    file_extension = Path(image_path).suffix[1:]
+                    url = f"data:image/{file_extension};base64,{base64_image}"
+
+                    system_prompt = self.create_system_prompt(self.category_loader.categories)
+
+                    response = completion(
+                        model="gpt-4o",
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": system_prompt
+                                    },
+                                    {
+                                        "type": "image_url",
+                                        "image_url": {
+                                            "url": url,
+                                        },
+                                    }
+                                ]
+                            }
+                        ],
+                        max_tokens=1024
+                    )
+
+                    # 応答データの処理
+                    content = response['choices'][0]['message']['content']
+                    _receipt = content.replace("```json", "").replace("```", "")
+                    receipt = json.loads(_receipt)
+                    
+                    with open(output_file_name, 'w', encoding='utf-8') as f:
+                        json.dump(receipt, f, ensure_ascii=False, indent=2)
+                    print(f"Output saved to {output_file_name}")
+                    await message.channel.send("解析が完了しました。")
+                    break
+                except Exception as e:
+                    if retry < retry_count - 1:
+                        await message.channel.send(f"エラー発生！リトライします [{retry+1}/{retry_count}] {e}")
+                    else:
+                        await message.channel.send(f"エラー発生！スキップします {e}")
+                        
         return receipt
+
+
