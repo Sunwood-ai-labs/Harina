@@ -67,22 +67,26 @@ async def process_attachments(message):
         date = datetime.datetime.now()
         file_name = f"{date.strftime('%Y%m%d%H%M%S')}_{attachment.filename}".replace(".jpg.jpg", ".jpg")
         
+        await message.channel.send(f"画像の保存を開始します: `{file_name}`")
         if await save_image(url, save_dir, file_name):
-            await message.channel.send(f"画像を保存しました: {file_name}")
+            await message.channel.send(f"画像を保存しました: `{file_name}`")
             logger.info(f"画像を保存しました: {file_name}")
         else:
             await message.channel.send("画像の保存に失敗しました。")
             logger.info("画像の保存に失敗しました。")
     
-    receipt = analyzer.analyze_receipts(save_dir, target_dir)
-    await message.channel.send(f"```{receipt}```")
+    await message.channel.send("レシートの解析を開始します...")
+    receipt = await analyzer.analyze_receipts(save_dir, target_dir, message)
+    await message.channel.send(f"すべてのレシートの解析が完了しました。")
 
+    await message.channel.send("解析結果の送信を開始します...")
     output_folder = 'output'
     archive_folder = 'archive'
     os.makedirs(archive_folder, exist_ok=True)
 
     for root, dirs, files in os.walk(output_folder):
         for file_name in files:
+            await message.channel.send(f"`{file_name[:20]}` 送信中 ...")
             if file_name.endswith('.json'):
                 file_path = os.path.join(root, file_name)
                 with open(file_path, 'r') as file:
@@ -95,12 +99,16 @@ async def process_attachments(message):
                 os.makedirs(archive_path, exist_ok=True)
                 shutil.move(file_path, os.path.join(archive_path, file_name))
 
+    await message.channel.send("解析結果の送信が完了しました。")
+
+    await message.channel.send("一時ファイルの削除を開始します...")
     # imgフォルダ内の画像ファイルを削除
     for root, dirs, files in os.walk(save_dir):
         for file_name in files:
             if file_name.endswith('.jpg'):
                 file_path = os.path.join(root, file_name)
                 os.remove(file_path)
+    await message.channel.send("一時ファイルの削除が完了しました。")
 
 @bot.event
 async def on_ready():
