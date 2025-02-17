@@ -107,7 +107,7 @@ async def process_attachments(message):
         for file_name in files:
             if file_name.endswith('.jpg'):
                 file_path = os.path.join(root, file_name)
-                os.remove(file_path)
+                # os.remove(file_path)
     await message.channel.send("一時ファイルの削除が完了しました。")
 
 @bot.event
