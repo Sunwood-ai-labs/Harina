@@ -26,3 +26,9 @@ build
 docs
 archive
 log
+
+.venv
+venv
+.vscode
+example
+ReceiptAnalyzer.py

@@ -1,0 +1,9 @@
+discord.py
+loguru
+pandas
+termcolor
+art
+litellm
+Pillow
+requests
+python-dotenv
